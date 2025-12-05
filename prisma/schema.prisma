@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Ini akan otomatis baca variabel dari .env Neon kamu
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Report {
+  id Int @id @default(autoincrement())
+  latitude Float
+  longitude Float
+  description String?
+  imageUrl String?
+  status String
+  createdAt DateTime @default(now())
+}
