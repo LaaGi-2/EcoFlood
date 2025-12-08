@@ -1,14 +1,13 @@
 import { fileToBase64 } from "@/helper/image-converter";
 import cloudinary from "@/lib/cloudinary";
-import prisma from "@/lib/connect-db";
+import { db, dbInitPromis } from "@/lib/connect-db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const reports = await prisma.report.findMany({
-            orderBy: { createdAt: 'desc' }
-        });
-        return NextResponse.json(reports, { status: 200 });
+        await dbInitPromis;
+        const reports = await db.execute(`SELECT * FROM reports`);
+        return NextResponse.json(reports.rows, { status: 200 });
     } catch (error) {
         console.error("Error: ", error);
         return NextResponse.json({ error: "Gagal mengambil data laporan." }, { status: 500 });
@@ -22,11 +21,10 @@ export async function POST(request: Request) {
         const longitude = formData.get('longitude');
         const description = formData.get('description');
         const imageUrl = formData.get('imageUrl') as File | null;
-        const status = formData.get('status');
 
-        if (!latitude || !longitude || !description || !imageUrl || !status) {
+        if (!latitude || !longitude || !description || !imageUrl) {
             return NextResponse.json({
-                error: "Semua data wajib diisi!"
+                error: "Semua data wajib diisi!\nlatitude:" + latitude + " \nlongitude:"  + longitude + "\ndescription: " + description + "\nimageUrl" + imageUrl,
             }, { status: 400 });
         }
 
@@ -38,16 +36,17 @@ export async function POST(request: Request) {
             quality: "auto"
         });
 
+        const latValue = parseFloat(latitude as string);
+        const lngValue = parseFloat(longitude as string);
+        const descValue = description as string;
         const url = uploadImage.secure_url;
+        
+        await dbInitPromis;
 
-        const newReport = await prisma.report.create({
-            data: {
-                latitude: parseFloat(latitude as string),
-                longitude: parseFloat(longitude as string),
-                description: description as string,
-                imageUrl: url,
-                status: status as string
-            }
+        const newReport = await db.execute({
+            sql: `INSERT INTO reports (latitude, longitude, description, imageUrl, status, createdAt)  
+            VALUES (?, ?, ?, ?, ?, ?); `,
+            args: [latValue, lngValue, descValue, url, 'pending', Date.now()]
         });
 
         return NextResponse.json(newReport, { status: 201 });

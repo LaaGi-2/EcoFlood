@@ -1,13 +1,31 @@
-import { PrismaClient } from "@prisma/client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Client, createClient } from '@libsql/client';
+import initializedDatabase from './initialize-db';
 
-declare global {
-    var prisma: PrismaClient | undefined;
+type Global = typeof globalThis & {
+    db: Client,
+    dbInitPromis: Promise<void> | null
 }
 
-const prisma = global.prisma || new PrismaClient;
+const globalDb = global as Global;
 
-if(process.env.NODE_ENV !== 'production') {
-    global.prisma = prisma;
+if (!globalDb.db) {
+    globalDb.db = createClient({
+        url: process.env.TURSO_DATABASE_URL!,
+        authToken: process.env.TURSO_AUTH_TOKEN
+    });
 }
 
-export default prisma;
+if (!globalDb.dbInitPromis) {
+    globalDb.dbInitPromis = initializedDatabase(globalDb.db).then(() => {
+        if (process.env.NODE_ENV != "production") {
+            (global as any).initializedDatabase = true;
+            console.log("Database siap digunakan!");
+        }
+    }).catch(err => {
+        console.log("Error: Database gagal diinisialisasi", err);
+    });
+}
+
+export const db = globalDb.db;
+export const dbInitPromis = globalDb.dbInitPromis;
