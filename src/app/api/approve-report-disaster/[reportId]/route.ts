@@ -9,6 +9,16 @@ export async function PATCH(request: Request, context: ContextApproveReportDisas
         const { reportId } = await context.params;
         const id = parseInt(reportId, 10);
 
+        const formData = await request.formData();
+        const secretTokenKey = formData.get("secretTokenKey");
+        const token = secretTokenKey as string;
+
+        if(token != process.env.SECRET_TOKEN_KEY) {
+            return NextResponse.json({
+                error: "Anda tidak punya izin akses!",
+            }, { status: 400 });
+        }
+
         if(isNaN(id)) {
             return NextResponse.json({ error: "ID laporan tidak valid! " }, { status: 400 });
         }
