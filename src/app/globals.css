@@ -12,6 +12,67 @@
   display: none;
 }
 
+/* Custom Leaflet Map Styling for EcoFlood */
+.leaflet-container {
+  background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%);
+  font-family: "Geist Sans", Arial, sans-serif;
+}
+
+/* Popup Styling */
+.leaflet-popup-content-wrapper {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 0;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  min-width: 280px;
+}
+
+.leaflet-popup-tip {
+  background: #bfdbfe;
+}
+
+/* Zoom Control Styling */
+.leaflet-control-zoom {
+  border: 2px solid #1e3a8a !important;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-control-zoom a {
+  background: #1e40af !important;
+  color: white !important;
+  font-weight: bold;
+  border: none !important;
+  transition: all 0.3s ease;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #3b82f6 !important;
+  transform: scale(1.1);
+}
+
+/* Attribution Styling */
+.leaflet-control-attribution {
+  background: rgba(30, 58, 138, 0.8) !important;
+  color: white !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.leaflet-control-attribution a {
+  color: #93c5fd !important;
+}
+
+/* Marker Shadow Enhancement */
+.leaflet-marker-shadow {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

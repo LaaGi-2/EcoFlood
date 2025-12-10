@@ -1,13 +1,12 @@
 import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
-import MapLoader from '@/components/layout/MapLoader'
 
 const page = () => {
   return (
     <>
       <Header />
-      <div className='min-h-screen '>
-        <MapLoader />
+      <div className='min-h-screen flex justify-between items-center px-20'>
+
       </div>
       <Footer />
     </>

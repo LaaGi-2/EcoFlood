@@ -11,16 +11,18 @@
   "dependencies": {
     "@libsql/client": "^0.15.15",
     "@reduxjs/toolkit": "^2.11.0",
+    "@tanstack/react-query": "^5.90.12",
     "axios": "^1.13.2",
     "cloudinary": "^2.8.0",
     "leaflet": "^1.9.4",
     "next": "^16.0.7",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "react-leaflet": "^5.0.0"
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
+    "react-leaflet": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/react": "^19",
