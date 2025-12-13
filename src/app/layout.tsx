@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Mulish } from "next/font/google";
-import "./globals.css";
 import Providers from "@/components/Providers";
+import 'leaflet/dist/leaflet.css';
+import "./globals.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

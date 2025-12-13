@@ -10,9 +10,12 @@ type Global = typeof globalThis & {
 const globalDb = global as Global;
 
 if (!globalDb.db) {
+    const databaseUrl = process.env.TURSO_DATABASE_URL || ':memory:';
+    const authToken = process.env.TURSO_AUTH_TOKEN;
+
     globalDb.db = createClient({
-        url: process.env.TURSO_DATABASE_URL!,
-        authToken: process.env.TURSO_AUTH_TOKEN
+        url: databaseUrl,
+        authToken: authToken
     });
 }
 
