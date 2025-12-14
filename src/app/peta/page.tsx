@@ -67,7 +67,12 @@ const Page = () => {
 
      // Filter data based on island selection
      const filteredDeforestationData = useIslandFilter(deforestationData, selectedIsland)
-     const filteredUserReports = useIslandFilter(userReports, selectedIsland)
+
+     // Filter user reports by island and year
+     const filteredUserReports = useIslandFilter(userReports, selectedIsland).filter(report => {
+          const reportYear = new Date(report.date).getFullYear()
+          return reportYear === selectedYear
+     })
 
      useEffect(() => {
           setIsMounted(true)
