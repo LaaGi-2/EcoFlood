@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Mulish } from "next/font/google";
 import Providers from "@/components/Providers";
+import LoadingBar from "@/components/common/LoadingBar";
+import PageLoader from "@/components/common/PageLoader";
 import 'leaflet/dist/leaflet.css';
 import "./globals.css";
 
@@ -30,6 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${dmSans.variable} ${mulish.variable} antialiased`}>
+        <PageLoader />
+        <LoadingBar />
         <Providers>
           {children}
         </Providers>

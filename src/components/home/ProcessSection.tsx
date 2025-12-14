@@ -1,6 +1,6 @@
 'use client'
 
-import { Activity, Shield } from 'lucide-react'
+import { Activity } from 'lucide-react'
 
 export default function ProcessSection() {
      return (
