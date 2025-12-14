@@ -63,6 +63,12 @@ export function getRiskColor(riskLevel: 'low' | 'medium' | 'high' | 'critical'):
      return colors[riskLevel] || colors.low
 }
 
+export interface Recommendation {
+     icon: string
+     text: string
+     priority: 'critical' | 'high' | 'medium' | 'low'
+}
+
 /**
  * Generate recommendations based on simulation
  */
@@ -73,27 +79,67 @@ export function getRecommendations(results: {
           rainfallImpact: number
           soilImpact: number
      }
-}): string[] {
-     const recommendations: string[] = []
+}): Recommendation[] {
+     const recommendations: Recommendation[] = []
 
-     if (results.factors.forestImpact > 60) {
-          recommendations.push('🌳 Increase forest cover through reforestation programs')
-     }
-
-     if (results.factors.rainfallImpact > 70) {
-          recommendations.push('💧 Improve drainage systems and water management')
-     }
-
-     if (results.factors.soilImpact > 60) {
-          recommendations.push('🌱 Enhance soil quality and natural absorption capacity')
-     }
-
+     // Critical risk recommendations (probability > 70%)
      if (results.floodProbability > 70) {
-          recommendations.push('⚠️ Consider flood prevention infrastructure')
+          recommendations.push({ icon: 'AlertOctagon', text: 'Tingkatkan kewaspadaan: Risiko banjir sangat tinggi! Segera koordinasi dengan instansi terkait untuk mitigasi bencana.', priority: 'critical' })
+          recommendations.push({ icon: 'Construction', text: 'Prioritaskan pembangunan infrastruktur drainase dan tanggul penahan air di area rawan banjir.', priority: 'critical' })
      }
 
-     if (recommendations.length === 0) {
-          recommendations.push('✅ Current conditions show low flood risk')
+     // High forest impact (deforestation)
+     if (results.factors.forestImpact > 70) {
+          recommendations.push({ icon: 'TreePine', text: 'Dampak deforestasi sangat signifikan! Lakukan reboisasi intensif minimal 1000 pohon per hektar di daerah kritis.', priority: 'high' })
+          recommendations.push({ icon: 'Shield', text: 'Terapkan kebijakan konservasi hutan ketat dan moratorium penebangan di kawasan resapan air.', priority: 'high' })
+     } else if (results.factors.forestImpact > 50) {
+          recommendations.push({ icon: 'Trees', text: 'Tingkatkan tutupan hutan dengan program penanaman pohon endemik yang akarnya kuat menyerap air.', priority: 'medium' })
+     } else if (results.factors.forestImpact > 30) {
+          recommendations.push({ icon: 'Sprout', text: 'Pertahankan tutupan hutan eksisting dan lakukan rehabilitasi di area yang terdegradasi.', priority: 'medium' })
+     }
+
+     // Rainfall impact
+     if (results.factors.rainfallImpact > 70) {
+          recommendations.push({ icon: 'CloudRain', text: 'Intensitas hujan ekstrem! Bangun sistem drainase modern dengan kapasitas 300+ mm/hari.', priority: 'high' })
+          recommendations.push({ icon: 'Waves', text: 'Buat kolam retensi air (retention pond) untuk menampung limpasan air hujan berlebih.', priority: 'high' })
+     } else if (results.factors.rainfallImpact > 50) {
+          recommendations.push({ icon: 'Droplets', text: 'Perbaiki dan perluas jaringan drainase eksisting untuk mengatasi volume air yang meningkat.', priority: 'medium' })
+     }
+
+     // Soil absorption impact
+     if (results.factors.soilImpact > 70) {
+          recommendations.push({ icon: 'Mountain', text: 'Kondisi tanah kritis! Terapkan metode bioengineering untuk memperbaiki struktur dan porositas tanah.', priority: 'high' })
+          recommendations.push({ icon: 'Layers', text: 'Lakukan konservasi tanah dengan terasering dan pembuatan sumur resapan di setiap lahan.', priority: 'high' })
+     } else if (results.factors.soilImpact > 50) {
+          recommendations.push({ icon: 'Leaf', text: 'Tingkatkan kemampuan resapan tanah dengan menambah bahan organik dan mengurangi pemadatan tanah.', priority: 'medium' })
+     }
+
+     // Medium risk recommendations (30-70%)
+     if (results.floodProbability >= 50 && results.floodProbability <= 70) {
+          recommendations.push({ icon: 'BarChart3', text: 'Lakukan kajian mendalam tentang pola aliran air dan identifikasi titik-titik rawan genangan.', priority: 'medium' })
+          recommendations.push({ icon: 'Users', text: 'Sosialisasikan sistem peringatan dini banjir kepada masyarakat di area berisiko.', priority: 'medium' })
+     }
+
+     // Preventive recommendations for medium-low risk
+     if (results.floodProbability >= 30 && results.floodProbability < 50) {
+          recommendations.push({ icon: 'Eye', text: 'Pantau kondisi lingkungan secara berkala untuk mencegah peningkatan risiko banjir.', priority: 'low' })
+          recommendations.push({ icon: 'BookOpen', text: 'Edukasi masyarakat tentang pentingnya menjaga kelestarian hutan dan lingkungan.', priority: 'low' })
+     }
+
+     // Low risk - maintain current conditions
+     if (results.floodProbability < 30) {
+          recommendations.push({ icon: 'CheckCircle', text: 'Kondisi lingkungan baik! Risiko banjir rendah dengan parameter saat ini.', priority: 'low' })
+          recommendations.push({ icon: 'Sparkles', text: 'Pertahankan keseimbangan ekosistem dengan terus memelihara tutupan hutan dan kualitas tanah.', priority: 'low' })
+          recommendations.push({ icon: 'ClipboardCheck', text: 'Tetap lakukan monitoring rutin untuk memastikan kondisi tetap optimal sepanjang tahun.', priority: 'low' })
+     }
+
+     // Additional context-specific recommendations
+     if (results.factors.forestImpact > 60 && results.factors.soilImpact > 60) {
+          recommendations.push({ icon: 'Zap', text: 'Kombinasi deforestasi dan tanah buruk menciptakan risiko berlipat! Prioritaskan rehabilitasi lahan kritis.', priority: 'critical' })
+     }
+
+     if (results.factors.rainfallImpact > 60 && results.factors.forestImpact > 60) {
+          recommendations.push({ icon: 'Wind', text: 'Hujan ekstrem + deforestasi = risiko banjir bandang! Bangun sistem peringatan dini komunitas.', priority: 'critical' })
      }
 
      return recommendations

@@ -71,12 +71,12 @@ const Page = () => {
                               </div>
                               <div className='flex-1'>
                                    <h3 className='text-xl font-bold text-surface-primary mb-2 flex items-center gap-2'>
-                                        Simulasi Lingkungan Real-Time
+                                        Simulasi Prediksi Risiko Banjir Interaktif
                                         <TrendingUp className='w-5 h-5 text-accent' />
                                    </h3>
                                    <p className='text-surface-primary/80 text-sm leading-relaxed'>
-                                        Atur <strong>persentase tutupan hutan</strong> dan <strong>intensitas hujan</strong> untuk melihat perubahan potensi banjir secara real-time.
-                                        Simulasi ini menggunakan model prediktif berbasis data historis dan penelitian ilmiah untuk memberikan hasil yang akurat.
+                                        Sesuaikan <strong>tutupan hutan</strong>, <strong>intensitas curah hujan</strong>, dan <strong>kondisi tanah</strong> untuk melihat dampaknya terhadap risiko banjir secara langsung.
+                                        Simulasi ini menggunakan model ilmiah berbasis data riset hidrologi dan ekologi untuk prediksi yang akurat dan dapat dijadikan acuan perencanaan mitigasi bencana.
                                    </p>
                               </div>
                          </div>
@@ -103,8 +103,8 @@ const Page = () => {
                                    </h3>
                                    <div className='space-y-3'>
                                         <ScenarioButton
-                                             label="Kondisi Ideal"
-                                             description="Hutan lebat, hujan normal"
+                                             label="Ekosistem Optimal"
+                                             description="Tutupan hutan 80%, curah hujan rendah, tanah sehat"
                                              onClick={() => {
                                                   setForestCover(80)
                                                   setRainfall(100)
@@ -114,8 +114,8 @@ const Page = () => {
                                              color="text-green-600"
                                         />
                                         <ScenarioButton
-                                             label="Deforestasi Berat"
-                                             description="Sedikit hutan, hujan ekstrem"
+                                             label="Kondisi Kritis"
+                                             description="Deforestasi parah 20%, hujan ekstrem 250mm, tanah rusak"
                                              onClick={() => {
                                                   setForestCover(20)
                                                   setRainfall(250)
@@ -125,8 +125,8 @@ const Page = () => {
                                              color="text-red-600"
                                         />
                                         <ScenarioButton
-                                             label="Kondisi Rata-rata"
-                                             description="Kondisi normal Indonesia"
+                                             label="Kondisi Umum Indonesia"
+                                             description="Tutupan hutan 50%, curah hujan 180mm, tanah sedang"
                                              onClick={() => {
                                                   setForestCover(50)
                                                   setRainfall(180)
@@ -156,20 +156,20 @@ const Page = () => {
                     <div className='mt-12 grid grid-cols-1 md:grid-cols-3 gap-6'>
                          <EducationCard
                               icon={<TreePine className='w-10 h-10' />}
-                              title="Peran Hutan"
-                              description="Hutan bertindak sebagai penyerap air alami. Akar pohon menahan air hujan dan mencegah aliran permukaan yang berlebihan."
+                              title="Fungsi Vital Hutan"
+                              description="Hutan berfungsi sebagai spons alami yang menyerap air hujan hingga 300mm/hari. Sistem akar pohon mengikat tanah, mencegah erosi, dan mengatur aliran air secara bertahap untuk menghindari banjir bandang."
                               color="text-green-600"
                          />
                          <EducationCard
                               icon={<CloudRain className='w-10 h-10' />}
-                              title="Dampak Hujan"
-                              description="Intensitas hujan tinggi dapat melampaui kapasitas penyerapan tanah, menyebabkan banjir terutama di area tanpa tutupan hutan."
+                              title="Intensitas Curah Hujan"
+                              description="Hujan dengan intensitas >150mm/hari dikategorikan ekstrem dan dapat melampaui daya serap tanah. Tanpa vegetasi pelindung, 90% air langsung menjadi run-off yang berpotensi menyebabkan banjir dalam hitungan jam."
                               color="text-blue-600"
                          />
                          <EducationCard
                               icon={<Sprout className='w-10 h-10' />}
-                              title="Kualitas Tanah"
-                              description="Tanah dengan penyerapan baik dapat mengurangi risiko banjir hingga 50%. Deforestasi merusak struktur tanah."
+                              title="Kapasitas Resapan Tanah"
+                              description="Tanah dengan struktur baik dan bahan organik tinggi mampu menyerap air 3-4x lebih banyak. Deforestasi menurunkan porositas tanah hingga 70%, mengubah area hijau menjadi zona rawan banjir."
                               color="text-emerald-600"
                          />
                     </div>

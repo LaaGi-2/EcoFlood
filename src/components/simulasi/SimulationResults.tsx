@@ -1,7 +1,12 @@
 "use client"
 
 import React from 'react'
-import { Droplets, Waves, Leaf, CheckCircle2, AlertTriangle, AlertOctagon, XCircle, Lightbulb } from 'lucide-react'
+import {
+     Droplets, Waves, Leaf, CheckCircle2, AlertTriangle, AlertOctagon, XCircle, Lightbulb,
+     TreePine, Shield, Trees, Sprout, CloudRain, Mountain, Layers, BarChart3, Users,
+     Eye, BookOpen, CheckCircle, Sparkles, ClipboardCheck, Zap, Wind, Construction
+} from 'lucide-react'
+import { Recommendation } from '@/services/simulation'
 
 interface SimulationResultsProps {
      floodProbability: number
@@ -13,7 +18,7 @@ interface SimulationResultsProps {
           rainfallImpact: number
           soilImpact: number
      }
-     recommendations: string[]
+     recommendations: Recommendation[]
 }
 
 const SimulationResults: React.FC<SimulationResultsProps> = ({
@@ -106,15 +111,22 @@ const SimulationResults: React.FC<SimulationResultsProps> = ({
                <div className="bg-linear-to-br from-primary/20 to-accent/20 rounded-3xl p-6 border-2 border-primary/30 shadow-md">
                     <h3 className="text-xl font-bold text-surface-primary mb-4 flex items-center gap-2">
                          <Lightbulb className="w-6 h-6 text-accent" />
-                         Rekomendasi
+                         Rekomendasi Mitigasi
                     </h3>
+                    <div className="mb-3 text-surface-primary/70 text-xs">
+                         Langkah-langkah yang dapat dilakukan untuk mengurangi risiko banjir:
+                    </div>
                     <ul className="space-y-3">
-                         {recommendations.map((rec, index) => (
-                              <li key={index} className="flex items-start gap-3 text-surface-primary bg-background/40 p-3 rounded-xl">
-                                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0mt-0.5" />
-                                   <span className="flex-1 text-sm">{rec}</span>
-                              </li>
-                         ))}
+                         {recommendations.map((rec, index) => {
+                              const IconComponent = getIconComponent(rec.icon)
+                              const priorityColor = getPriorityColor(rec.priority)
+                              return (
+                                   <li key={index} className="flex items-start gap-3 text-surface-primary bg-background/40 p-3 rounded-xl hover:bg-background/60 transition-colors">
+                                        <IconComponent className={`w-5 h-5 ${priorityColor} shrink-0 mt-0.5`} />
+                                        <span className="flex-1 text-sm leading-relaxed">{rec.text}</span>
+                                   </li>
+                              )
+                         })}
                     </ul>
                </div>
           </div>
@@ -165,6 +177,28 @@ const FactorBar: React.FC<FactorBarProps> = ({ label, value, color }) => {
                </div>
           </div>
      )
+}
+
+// Helper function to get icon component by name
+const getIconComponent = (iconName: string) => {
+     const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+          AlertOctagon, Construction, TreePine, Shield, Trees, Sprout,
+          CloudRain, Waves, Droplets, Mountain, Layers, Leaf,
+          BarChart3, Users, Eye, BookOpen, CheckCircle, Sparkles,
+          ClipboardCheck, Zap, Wind, CheckCircle2
+     }
+     return icons[iconName] || CheckCircle2
+}
+
+// Helper function to get priority color
+const getPriorityColor = (priority: 'critical' | 'high' | 'medium' | 'low') => {
+     const colors: Record<string, string> = {
+          critical: 'text-red-600',
+          high: 'text-orange-500',
+          medium: 'text-yellow-500',
+          low: 'text-green-600'
+     }
+     return colors[priority] || 'text-primary'
 }
 
 export default SimulationResults

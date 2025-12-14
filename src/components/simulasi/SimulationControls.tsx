@@ -34,7 +34,7 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                     <div className="flex justify-between items-center mb-3">
                          <label className="text-surface-primary font-semibold flex items-center gap-2">
                               <TreePine className="w-5 h-5 text-green-600" />
-                              Tutupan Hutan
+                              Persentase Tutupan Hutan
                          </label>
                          <span className="text-2xl font-bold text-primary">{forestCover}%</span>
                     </div>
@@ -48,9 +48,12 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                     />
                     <div className="flex justify-between text-surface-primary/60 text-sm mt-2">
                          <span>0%</span>
-                         <span className="text-xs">Tidak Ada Hutan</span>
-                         <span className="text-xs">Hutan Lebat</span>
+                         <span className="text-xs">Lahan Gundul</span>
+                         <span className="text-xs">Hutan Primer</span>
                          <span>100%</span>
+                    </div>
+                    <div className="text-xs text-surface-primary/60 mt-2 italic">
+                         Tutupan hutan ≥70% memberikan perlindungan optimal dari banjir
                     </div>
                </div>
 
@@ -59,9 +62,9 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                     <div className="flex justify-between items-center mb-3">
                          <label className="text-surface-primary font-semibold flex items-center gap-2">
                               <CloudRain className="w-5 h-5 text-blue-600" />
-                              Intensitas Hujan
+                              Curah Hujan Harian
                          </label>
-                         <span className="text-2xl font-bold text-accent">{rainfall} mm</span>
+                         <span className="text-2xl font-bold text-accent">{rainfall} mm/hari</span>
                     </div>
                     <input
                          type="range"
@@ -73,9 +76,12 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                     />
                     <div className="flex justify-between text-surface-primary/60 text-sm mt-2">
                          <span>0 mm</span>
-                         <span className="text-xs">Hujan Ringan</span>
-                         <span className="text-xs">Hujan Ekstrem</span>
+                         <span className="text-xs">Ringan (&lt;50)</span>
+                         <span className="text-xs">Ekstrem (&gt;150)</span>
                          <span>300 mm</span>
+                    </div>
+                    <div className="text-xs text-surface-primary/60 mt-2 italic">
+                         Curah hujan &gt;150mm/hari dapat menyebabkan banjir di area rawan
                     </div>
                </div>
 
@@ -83,9 +89,9 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                <div>
                     <label className="text-surface-primary font-semibold mb-3 flex items-center gap-2">
                          <Sprout className="w-5 h-5 text-emerald-600" />
-                         Kemampuan Penyerapan Tanah
+                         Kapasitas Resapan Tanah
                     </label>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-3 mb-2">
                          <SoilButton
                               label="Rendah"
                               value="low"
@@ -107,6 +113,9 @@ const SimulationControls: React.FC<SimulationControlsProps> = ({
                               onClick={() => onSoilAbsorptionChange('high')}
                               color="bg-green-500"
                          />
+                    </div>
+                    <div className="text-xs text-surface-primary/60 mt-2 italic">
+                         Rendah: lahan beton/gundul | Sedang: tanah biasa | Tinggi: tanah berpori + vegetasi
                     </div>
                </div>
 
