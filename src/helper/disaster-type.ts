@@ -6,7 +6,7 @@ export const getDisasterTypeInfo = (type: DisasterType | string) => {
 
 export const getDisasterTypeIcon = (type: DisasterType | string): string => {
      const info = getDisasterTypeInfo(type)
-     return info?.icon || '⚠️'
+     return info?.iconName || 'AlertCircle'
 }
 
 export const getDisasterTypeLabel = (type: DisasterType | string): string => {

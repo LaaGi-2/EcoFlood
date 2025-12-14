@@ -339,8 +339,17 @@ const MapLayers: React.FC<MapLayersProps> = ({
           // User Reports Layer (IMPROVED)
           if (layers.userReports && userReports.length > 0 && layerGroupsRef.current.userReports) {
                userReports.forEach(report => {
+                    // Map English type to Indonesian disaster type
+                    const typeMapping: Record<string, string> = {
+                         'flood': 'banjir',
+                         'deforestation': 'deforestasi',
+                         'fire': 'kebakaran_hutan',
+                         'other': 'lainnya'
+                    }
+                    const mappedType = report.type ? typeMapping[report.type] : 'lainnya'
+                    
                     // Find disaster type from DISASTER_TYPES based on type_disaster field
-                    const disasterType = DISASTER_TYPES.find(t => t.value === report.type)
+                    const disasterType = DISASTER_TYPES.find(t => t.value === mappedType)
                     const defaultType = DISASTER_TYPES.find(t => t.value === 'lainnya') || DISASTER_TYPES[DISASTER_TYPES.length - 1]
                     const config = disasterType || defaultType
 
