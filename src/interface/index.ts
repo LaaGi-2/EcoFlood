@@ -109,9 +109,9 @@ export const DISASTER_TYPES: DisasterTypeOption[] = [
           label: 'Lainnya',
           description: 'Kejadian lingkungan lainnya',
           iconName: 'AlertCircle',
-          color: '#6b7280',
-          bgColor: '#f3f4f6',
-          borderColor: '#d1d5db'
+          color: '#9333ea',
+          bgColor: '#f3e8ff',
+          borderColor: '#d8b4fe'
      }
 ];
 

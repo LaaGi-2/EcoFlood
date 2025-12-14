@@ -115,16 +115,6 @@ const Page = () => {
           }))
      }
 
-     // Helper function to determine island from coordinates
-     const getIslandFromCoords = (lat: number, lng: number): string => {
-          if (lng < 108) return 'sumatra'
-          if (lng > 108 && lng < 120 && lat > -5) return 'kalimantan'
-          if (lng > 105 && lng < 116 && lat < -5) return 'java'
-          if (lng > 119 && lng < 126) return 'sulawesi'
-          if (lng > 130) return 'papua'
-          return 'other'
-     }
-
      // Handle report success
      const handleReportSuccess = () => {
           showNotification({

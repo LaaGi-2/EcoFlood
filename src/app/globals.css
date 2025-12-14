@@ -51,6 +51,32 @@
   display: none;
 }
 
+/* Custom Scrollbar for Popup */
+.custom-popup .overflow-y-auto::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.custom-popup .overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(42, 99, 84, 0.1);
+  border-radius: 10px;
+}
+
+.custom-popup .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(42, 99, 84, 0.4);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.custom-popup .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(42, 99, 84, 0.6);
+}
+
+/* Smooth scrolling */
+.custom-popup .overflow-y-auto {
+  scroll-behavior: smooth;
+}
+
 /* Zoom Control Styling */
 .leaflet-control-zoom {
   border: 2px solid #1e3a8a !important;

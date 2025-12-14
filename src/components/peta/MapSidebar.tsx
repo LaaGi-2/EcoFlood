@@ -50,7 +50,7 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
           { value: 'papua', label: 'Papua' }
      ]
 
-     const years = Array.from({ length: 15 }, (_, i) => 2010 + i)
+     const years = Array.from({ length: 16 }, (_, i) => 2010 + i)
 
      return (
           <aside className={`w-[85vw] sm:w-96 lg:w-80 h-screen bg-surface-primary/95 backdrop-blur-sm shadow-xl p-4 sm:p-6 flex flex-col overflow-y-auto fixed inset-y-0 left-0 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
-import { Flame, Leaf, MapPin, Ruler, CheckCircle2, Clock, XCircle } from 'lucide-react'
+import { Flame, Leaf, MapPin, Ruler, Clock, Thermometer, Zap, Trees, Droplets, Activity } from 'lucide-react'
 import { renderToString } from 'react-dom/server'
 import { DISASTER_TYPES } from '@/interface'
 import DisasterIcon from '@/components/common/DisasterIcon'
@@ -161,15 +161,35 @@ const MapLayers: React.FC<MapLayersProps> = ({
                          weight: 2
                     })
 
+                    const treesIcon = renderToString(<Trees size={24} />)
+                    const mapPinIcon = renderToString(<MapPin size={16} />)
+                    const activityIcon = renderToString(<Activity size={16} />)
+
                     circle.bindPopup(`
-                         <div class="p-3 min-w-62.5">
-                              <h3 class="font-bold text-lg text-red-600 mb-2">🌳 Deforestasi</h3>
-                              <div class="mb-2 px-2 py-1 rounded text-xs font-semibold inline-block" style="background: ${fillColor}; color: white;">
-                                   ${severityLabel}
+                         <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${color};">
+                              <div class="flex items-center gap-2 mb-3">
+                                   <div style="color: ${fillColor};">${treesIcon}</div>
+                                   <h3 class="font-bold text-lg" style="color: #2a6354;">Deforestasi</h3>
                               </div>
-                              <p class="text-sm"><strong>Lokasi:</strong> ${point.region}</p>
-                              <p class="text-sm"><strong>Luas:</strong> ${point.area_hectares.toLocaleString()} ha</p>
-                              <p class="text-sm"><strong>Intensitas:</strong> ${point.intensity}%</p>
+                              <div class="mb-3">
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-block" style="background: ${fillColor}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${severityLabel}
+                                   </div>
+                              </div>
+                              <div style="color: #2a6354;">
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${fillColor};">${mapPinIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Lokasi:</strong> ${point.region}</p>
+                                   </div>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${fillColor};">${activityIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Luas:</strong> ${point.area_hectares.toLocaleString()} ha</p>
+                                   </div>
+                                   <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(220,38,38,0.1) 0%, rgba(220,38,38,0.2) 100%); border-left: 3px solid ${color};">
+                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">Intensitas:</p>
+                                        <p class="text-sm" style="color: #2a6354;">${point.intensity}%</p>
+                                   </div>
+                              </div>
                          </div>
                     `)
 
@@ -199,16 +219,38 @@ const MapLayers: React.FC<MapLayersProps> = ({
                          fillOpacity: 0.8
                     })
 
+                    const dropletsIcon = renderToString(<Droplets size={24} />)
+                    const mapPinIcon = renderToString(<MapPin size={16} />)
+
                     marker.bindPopup(`
-                         <div class="p-3 min-w-65">
-                              <h3 class="font-bold text-lg text-blue-600 mb-2">💧 Banjir ${flood.year}</h3>
-                              <div class="mb-2 px-2 py-1 rounded text-xs font-semibold inline-block" style="background: ${config.color}; color: white;">
-                                   ${config.label}
+                         <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${config.color};">
+                              <div class="flex items-center gap-2 mb-3">
+                                   <div style="color: ${config.fill};">${dropletsIcon}</div>
+                                   <h3 class="font-bold text-lg" style="color: #2a6354;">Banjir ${flood.year}</h3>
                               </div>
-                              <p class="text-sm"><strong>Lokasi:</strong> ${flood.location}</p>
-                              <p class="text-sm"><strong>Korban:</strong> ${flood.casualties} orang</p>
-                              <p class="text-sm"><strong>Terdampak:</strong> ${flood.affected.toLocaleString()} orang</p>
-                              <p class="text-sm mt-1 text-gray-600">${flood.description}</p>
+                              <div class="mb-3">
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-block" style="background: ${config.fill}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${config.label}
+                                   </div>
+                              </div>
+                              <div style="color: #2a6354;">
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${mapPinIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Lokasi:</strong> ${flood.location}</p>
+                                   </div>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${dropletsIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Korban:</strong> ${flood.casualties} orang</p>
+                                   </div>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${dropletsIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Terdampak:</strong> ${flood.affected.toLocaleString()} orang</p>
+                                   </div>
+                                   <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0.2) 100%); border-left: 3px solid ${config.color};">
+                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">Deskripsi:</p>
+                                        <p class="text-sm" style="color: #2a6354;">${flood.description}</p>
+                                   </div>
+                              </div>
                          </div>
                     `)
 
@@ -240,6 +282,8 @@ const MapLayers: React.FC<MapLayersProps> = ({
 
                     const flameIcon = renderToString(<Flame size={24} />)
                     const mapPinIcon = renderToString(<MapPin size={16} />)
+                    const thermometerIcon = renderToString(<Thermometer size={16} />)
+                    const zapIcon = renderToString(<Zap size={16} />)
 
                     marker.bindPopup(`
                          <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${config.color};">
@@ -252,18 +296,18 @@ const MapLayers: React.FC<MapLayersProps> = ({
                                         ${config.label}
                                    </div>
                               </div>
-                              <div class="space-y-2" style="color: #2a6354;">
-                                   <div class="flex items-start gap-2">
-                                        <div style="min-width: 16px;">${mapPinIcon}</div>
-                                        <p class="text-sm"><strong>Lokasi:</strong> ${fire.location}</p>
+                              <div style="color: #2a6354;">
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${mapPinIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Lokasi:</strong> ${fire.location}</p>
                                    </div>
-                                   <div class="flex items-start gap-2">
-                                        <span class="font-bold text-sm">🌡️</span>
-                                        <p class="text-sm"><strong>Brightness:</strong> ${fire.brightness}K</p>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${thermometerIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Brightness:</strong> ${fire.brightness}K</p>
                                    </div>
-                                   <div class="flex items-start gap-2">
-                                        <span class="font-bold text-sm">⚡</span>
-                                        <p class="text-sm"><strong>FRP:</strong> ${fire.frp} MW</p>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${zapIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>FRP:</strong> ${fire.frp} MW</p>
                                    </div>
                                    <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(249,115,22,0.2) 100%); border-left: 3px solid ${config.color};">
                                         <p class="text-sm font-semibold mb-1" style="color: #2a6354;">Tipe Kebakaran:</p>
@@ -314,18 +358,20 @@ const MapLayers: React.FC<MapLayersProps> = ({
                                         ${config.label}
                                    </div>
                               </div>
-                              <div class="space-y-2" style="color: #2a6354;">
-                                   <div class="flex items-start gap-2">
-                                        <div style="min-width: 16px;">${mapPinIcon}</div>
-                                        <p class="text-sm"><strong>Lokasi:</strong> ${area.location}</p>
+                              <div style="color: #2a6354;">
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${mapPinIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Lokasi:</strong> ${area.location}</p>
                                    </div>
-                                   <div class="flex items-start gap-2">
-                                        <div style="min-width: 16px;">${rulerIcon}</div>
-                                        <p class="text-sm"><strong>Luas:</strong> ${area.area_km2.toLocaleString()} km²</p>
+                                   <div class="flex items-center gap-2">
+                                        <div style="min-width: 16px; color: ${config.fill};">${rulerIcon}</div>
+                                        <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Luas:</strong> ${area.area_km2.toLocaleString()} km²</p>
                                    </div>
                                    <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.2) 100%); border-left: 3px solid ${config.color};">
-                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">🐾 Spesies Dilindungi:</p>
-                                        <p class="text-sm" style="color: #2a6354;">${area.species.join(', ')}</p>
+                                        <div class="flex items-start gap-2 mb-1">
+                                             <p class="text-sm font-semibold" style="color: #2a6354;">Spesies Dilindungi:</p>
+                                        </div>
+                                        <p class="text-sm ml-6" style="color: #2a6354;">${area.species.join(', ')}</p>
                                    </div>
                               </div>
                          </div>
@@ -353,35 +399,11 @@ const MapLayers: React.FC<MapLayersProps> = ({
                     const defaultType = DISASTER_TYPES.find(t => t.value === 'lainnya') || DISASTER_TYPES[DISASTER_TYPES.length - 1]
                     const config = disasterType || defaultType
 
-                    // Status configuration
-                    const statusConfig = {
-                         pending: {
-                              color: '#ff8b71',
-                              label: 'Menunggu Verifikasi',
-                              icon: renderToString(<Clock size={14} className="text-white" />),
-                              borderColor: '#ff8b71'
-                         },
-                         success: {
-                              color: '#10b981',
-                              label: 'Disetujui',
-                              icon: renderToString(<CheckCircle2 size={14} className="text-white" />),
-                              borderColor: '#10b981'
-                         },
-                         rejected: {
-                              color: '#ef4444',
-                              label: 'Ditolak',
-                              icon: renderToString(<XCircle size={14} className="text-white" />),
-                              borderColor: '#ef4444'
-                         }
-                    }
-
-                    const status = statusConfig[report.status as keyof typeof statusConfig] || statusConfig.pending
-
                     // Create marker with disaster type color
                     const marker = L.circleMarker([report.lat, report.lng], {
                          radius: 10,
                          fillColor: config.color,
-                         color: status.borderColor,
+                         color: config.color,
                          weight: 3,
                          opacity: 1,
                          fillOpacity: 0.8
@@ -413,69 +435,115 @@ const MapLayers: React.FC<MapLayersProps> = ({
                          })
                     }
 
-                    marker.bindPopup(`
-                         <div class="rounded-xl overflow-hidden shadow-2xl" style="min-width: 300px; max-width: 350px; border: 3px solid ${status.borderColor};">
+                    // Format location name
+                    const formatLocation = () => {
+                         if (report.location && report.location.trim() && report.location !== `${report.lat.toFixed(4)}, ${report.lng.toFixed(4)}`) {
+                              return report.location
+                         }
+                         return `<span style="color: #94a3b8; font-style: italic;">Koordinat: ${report.lat.toFixed(4)}, ${report.lng.toFixed(4)}</span>`
+                    }
+
+                    // Render icons
+                    const mapPinIcon = renderToString(<MapPin size={16} />)
+                    const clockIcon = renderToString(<Clock size={16} />)
+
+                    // Create popup element with improved layout
+                    const popupContent = `
+                         <div class="rounded-lg" style="min-width: 320px; max-width: 360px; background: #fcf6e4; border: 2px solid ${config.color};">
                               <!-- Header -->
-                              <div class="p-4 relative" style="background: linear-gradient(135deg, ${config.color} 0%, ${config.color}dd 100%);">
-                                   <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
-                                             <div style="color: white;">${disasterIconSvg}</div>
-                                        </div>
-                                        <div class="flex-1">
-                                             <h3 class="font-bold text-lg text-white mb-1">Laporan Warga</h3>
-                                             <p class="text-xs text-white/90 font-semibold">#${report.id}</p>
-                                        </div>
+                              <div class="p-4">
+                                   <div class="flex items-center gap-2 mb-3">
+                                        <div style="color: ${config.color};">${disasterIconSvg}</div>
+                                        <h3 class="font-bold text-lg" style="color: #2a6354;">Laporan Warga</h3>
                                    </div>
-                                   <div class="flex gap-2 flex-wrap">
-                                        <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5" style="background: rgba(255,255,255,0.95); color: ${config.color}; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                                   <div class="mb-2">
+                                        <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-block" style="background: ${config.color}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                              ${config.label}
-                                        </div>
-                                        <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5" style="background: ${status.color}; color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                                             <span>${status.icon}</span>
-                                             ${status.label}
                                         </div>
                                    </div>
                               </div>
                               
-                              <!-- Content -->
-                              <div class="p-4 space-y-3" style="background: #fcf6e4;">
-                                   ${report.imageUrl ? `
-                                        <div class="rounded-lg overflow-hidden shadow-md">
-                                             <img src="${report.imageUrl}" alt="Foto laporan" class="w-full h-40 object-cover" />
-                                        </div>
-                                   ` : ''}
-                                   
-                                   <div class="space-y-2">
-                                        <div class="flex items-start gap-2">
-                                             <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background: ${config.bgColor};">
-                                                  <span style="font-size: 0.7rem;">📍</span>
+                              <!-- Content - Scrollable -->
+                              <div class="overflow-y-auto" style="max-height: 400px;">
+                                   <div class="p-4 space-y-3">
+                                        ${report.imageUrl ? `
+                                             <div class="rounded-lg overflow-hidden shadow-md">
+                                                  <img src="${report.imageUrl}" alt="Foto laporan" class="w-full h-48 object-cover" style="display: block;" />
                                              </div>
-                                             <div class="flex-1">
-                                                  <p class="text-xs font-semibold text-surface-primary/60">LOKASI</p>
-                                                  <p class="text-sm font-semibold text-surface-primary">${report.location || `${report.lat.toFixed(4)}, ${report.lng.toFixed(4)}`}</p>
-                                             </div>
-                                        </div>
+                                        ` : ''}
                                         
-                                        <div class="flex items-start gap-2">
-                                             <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background: ${config.bgColor};">
-                                                  <span style="font-size: 0.7rem;">🕐</span>
+                                        <!-- Info Section -->
+                                        <div style="color: #2a6354;">
+                                             <!-- Location -->
+                                             <div class="flex items-center gap-2">
+                                                  <div style="min-width: 16px; color: ${config.color};">${mapPinIcon}</div>
+                                                  <p class="text-sm" style="margin: 0 0 6px 0;"><strong>Lokasi:</strong> ${formatLocation()}</p>
                                              </div>
-                                             <div class="flex-1">
-                                                  <p class="text-xs font-semibold text-surface-primary/60">WAKTU</p>
-                                                  <p class="text-sm font-semibold text-surface-primary">${formatDate(report.date)}</p>
+                                             
+                                             <!-- Time -->
+                                             <div class="flex items-center gap-2">
+                                                  <div style="min-width: 16px; color: ${config.color};">${clockIcon}</div>
+                                                  <p class="text-sm" style="margin: 0 0 4px 0;"><strong>Waktu:</strong> ${formatDate(report.date)}</p>
                                              </div>
-                                        </div>
-                                        
-                                        <div class="mt-3 p-3 rounded-lg" style="background: ${config.bgColor}; border-left: 3px solid ${config.color};">
-                                             <p class="text-xs font-bold mb-1" style="color: ${config.color};">DESKRIPSI:</p>
-                                             <p class="text-sm leading-relaxed" style="color: #2a6354;">${report.description}</p>
+                                             
+                                             <!-- Description -->
+                                             <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, ${config.bgColor} 0%, ${config.bgColor}ee 100%); border-left: 3px solid ${config.color};">
+                                                  <p class="text-sm font-semibold mb-1" style="color: ${config.color};">Deskripsi:</p>
+                                                  <p class="text-sm leading-relaxed" style="color: #2a6354;">${report.description}</p>
+                                             </div>
                                         </div>
                                    </div>
                               </div>
                          </div>
-                    `, {
-                         maxWidth: 350,
-                         className: 'custom-popup'
+                    `
+
+                    marker.bindPopup(popupContent, {
+                         maxWidth: 340,
+                         minWidth: 340,
+                         className: 'custom-popup',
+                         closeButton: true,
+                         autoPan: true,
+                         autoPanPadding: [50, 50]
+                    })
+
+                    // Fetch location name on popup open if not available
+                    marker.on('popupopen', async () => {
+                         if (!report.location || report.location.trim() === '' || report.location === `${report.lat.toFixed(4)}, ${report.lng.toFixed(4)}`) {
+                              try {
+                                   const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${report.lat}&lon=${report.lng}&zoom=10&addressdetails=1&accept-language=id`)
+                                   const data = await response.json()
+
+                                   let locationName = ''
+                                   if (data.address) {
+                                        const parts = []
+                                        if (data.address.village) parts.push(data.address.village)
+                                        else if (data.address.suburb) parts.push(data.address.suburb)
+                                        else if (data.address.neighbourhood) parts.push(data.address.neighbourhood)
+
+                                        if (data.address.city) parts.push(data.address.city)
+                                        else if (data.address.town) parts.push(data.address.town)
+                                        else if (data.address.municipality) parts.push(data.address.municipality)
+                                        else if (data.address.county) parts.push(data.address.county)
+
+                                        if (data.address.state) parts.push(data.address.state)
+
+                                        locationName = parts.join(', ') || data.display_name
+                                   }
+
+                                   if (locationName) {
+                                        const popup = marker.getPopup()
+                                        if (popup) {
+                                             const newContent = popupContent.replace(
+                                                  `<span style="color: #94a3b8; font-style: italic;">Koordinat: ${report.lat.toFixed(4)}, ${report.lng.toFixed(4)}</span>`,
+                                                  locationName
+                                             )
+                                             popup.setContent(newContent)
+                                        }
+                                   }
+                              } catch (error) {
+                                   console.error('Error fetching location:', error)
+                              }
+                         }
                     })
 
                     layerGroupsRef.current.userReports?.addLayer(marker)
