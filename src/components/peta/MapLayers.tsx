@@ -347,7 +347,7 @@ const MapLayers: React.FC<MapLayersProps> = ({
                          'other': 'lainnya'
                     }
                     const mappedType = report.type ? typeMapping[report.type] : 'lainnya'
-                    
+
                     // Find disaster type from DISASTER_TYPES based on type_disaster field
                     const disasterType = DISASTER_TYPES.find(t => t.value === mappedType)
                     const defaultType = DISASTER_TYPES.find(t => t.value === 'lainnya') || DISASTER_TYPES[DISASTER_TYPES.length - 1]

@@ -18,7 +18,7 @@ const Page = () => {
         {/* Decorative Background */}
         <div className='absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl' />
         <div className='absolute bottom-1/4 left-0 w-80 h-80 bg-surface-primary/5 rounded-full blur-3xl' />
-        
+
         <div className='max-w-7xl mx-auto relative'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center'>
             {/* Left Content */}
@@ -99,7 +99,7 @@ const Page = () => {
                 <div className='h-8 w-px bg-gray-300' />
                 <div className='flex items-center gap-2'>
                   <div className='flex items-center'>
-                    {[1,2,3,4,5].map((star) => (
+                    {[1, 2, 3, 4, 5].map((star) => (
                       <svg key={star} className='w-4 h-4 text-amber-400 fill-current' viewBox='0 0 20 20'>
                         <path d='M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z' />
                       </svg>
@@ -481,16 +481,16 @@ const Page = () => {
       <section className='relative py-20 md:py-24 lg:py-32 px-6 md:px-12 lg:px-20 bg-gradient-to-br from-surface-primary via-emerald-800 to-teal-900 overflow-hidden'>
         {/* Background Pattern */}
         <div className='absolute inset-0 opacity-5'>
-          <div className='absolute inset-0' style={{backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px'}} />
+          <div className='absolute inset-0' style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
         </div>
-        
+
         <div className='max-w-4xl mx-auto text-center relative z-10'>
           {/* Urgency Badge */}
           <div className='inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm border border-accent/30 rounded-full px-4 py-2 mb-6'>
             <AlertTriangle className='text-accent' size={18} />
             <span className='text-sm font-semibold text-background'>Indonesia kehilangan 1.5 juta hektar hutan/tahun</span>
           </div>
-          
+
           {/* Heading */}
           <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-background leading-tight'>
             Mari Bangun Masa Depan yang <span className='relative inline-block'>Lebih Hijau<div className='absolute bottom-0 left-0 w-full h-3 bg-primary/40 -rotate-1' /></span> Bersama
@@ -541,7 +541,7 @@ const Page = () => {
               <span>Buat Laporan</span>
             </button>
           </div>
-          
+
           {/* Trust Indicator */}
           <p className='mt-8 text-sm text-background/70'>
             ✓ Dipercaya oleh pemerintah daerah • ✓ Data terverifikasi • ✓ Tanpa biaya tersembunyi
