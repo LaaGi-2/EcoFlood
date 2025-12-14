@@ -14,6 +14,7 @@ interface MapSidebarProps {
           floodHistory: boolean
           fireHotspots: boolean
           biodiversity: boolean
+          userReports: boolean
      }
      onLayerToggle: (layer: string) => void
 }
@@ -125,28 +126,80 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
                               icon="🦜"
                               description="Area konservasi"
                          />
+                         <LayerCheckbox
+                              label="Laporan Warga"
+                              checked={layers.userReports}
+                              onChange={() => onLayerToggle('userReports')}
+                              icon="📍"
+                              description="Laporan dari masyarakat"
+                         />
                     </div>
                </div>
 
                {/* Legend */}
                <div className="mt-6 pt-6 border-t border-background/20">
-                    <h3 className="text-background font-semibold mb-3 text-sm">Legenda</h3>
-                    <div className="space-y-2 text-xs text-background/80">
-                         <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                              <span>Deforestasi Tinggi</span>
+                    <h3 className="text-background font-semibold mb-3 text-sm">Legenda Tingkat Bahaya</h3>
+                    <div className="space-y-3 text-xs text-background/90">
+                         {/* Deforestation Legend */}
+                         <div>
+                              <p className="font-semibold mb-1.5 text-background">🌳 Deforestasi</p>
+                              <div className="space-y-1 ml-4">
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#dc2626' }}></div>
+                                        <span>Kritis (≥80%)</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#ef4444' }}></div>
+                                        <span>Tinggi (60-79%)</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#fb923c' }}></div>
+                                        <span>Sedang (40-59%)</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#fde047' }}></div>
+                                        <span>Rendah (&lt;40%)</span>
+                                   </div>
+                              </div>
                          </div>
-                         <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                              <span>Area Banjir</span>
+
+                         {/* Flood Legend */}
+                         <div>
+                              <p className="font-semibold mb-1.5 text-background">💧 Banjir</p>
+                              <div className="space-y-1 ml-4">
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#1e3a8a' }}></div>
+                                        <span>Kritis</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#1e40af' }}></div>
+                                        <span>Tinggi</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#3b82f6' }}></div>
+                                        <span>Sedang</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#60a5fa' }}></div>
+                                        <span>Rendah</span>
+                                   </div>
+                              </div>
                          </div>
-                         <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                              <span>Titik Api</span>
-                         </div>
-                         <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                              <span>Kawasan Lindung</span>
+
+                         {/* Other Layers */}
+                         <div className="space-y-1.5 pt-2 border-t border-background/10">
+                              <div className="flex items-center gap-2">
+                                   <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                   <span>🔥 Titik Api</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                   <span>🦜 Kawasan Lindung</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                   <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                   <span>📍 Laporan Warga</span>
+                              </div>
                          </div>
                     </div>
                </div>

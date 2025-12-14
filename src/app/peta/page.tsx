@@ -59,6 +59,71 @@ interface BiodiversityData {
      area_km2: number
 }
 
+interface UserReport {
+     id: string
+     lat: number
+     lng: number
+     location: string
+     type: 'flood' | 'deforestation' | 'fire' | 'other'
+     description: string
+     date: string
+     status: 'pending' | 'verified' | 'rejected'
+}
+
+// Dummy user reports data (will be replaced with API calls)
+const dummyUserReports: UserReport[] = [
+     {
+          id: 'ur1',
+          lat: -6.2088,
+          lng: 106.8456,
+          location: 'Jakarta Utara',
+          type: 'flood',
+          description: 'Banjir setinggi 1 meter menggenangi pemukiman warga',
+          date: '2024-12-10',
+          status: 'verified'
+     },
+     {
+          id: 'ur2',
+          lat: -0.9517,
+          lng: 116.0921,
+          location: 'Kutai Kartanegara, Kalimantan',
+          type: 'deforestation',
+          description: 'Pembukaan lahan hutan untuk perkebunan sawit',
+          date: '2024-11-25',
+          status: 'pending'
+     },
+     {
+          id: 'ur3',
+          lat: 0.5071,
+          lng: 101.4478,
+          location: 'Riau',
+          type: 'fire',
+          description: 'Kebakaran lahan gambut di area perkebunan',
+          date: '2024-12-05',
+          status: 'verified'
+     },
+     {
+          id: 'ur4',
+          lat: -7.2575,
+          lng: 112.7521,
+          location: 'Surabaya',
+          type: 'flood',
+          description: 'Banjir rob merendam jalan utama pesisir',
+          date: '2024-12-12',
+          status: 'pending'
+     },
+     {
+          id: 'ur5',
+          lat: -3.3194,
+          lng: 114.5901,
+          location: 'Banjarmasin',
+          type: 'flood',
+          description: 'Luapan sungai Martapura menggenangi beberapa desa',
+          date: '2024-11-30',
+          status: 'verified'
+     }
+]
+
 // Fix Leaflet default marker icon issue
 if (typeof window !== 'undefined') {
      // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,7 +147,8 @@ const Page = () => {
           deforestation: true,
           floodHistory: true,
           fireHotspots: false,
-          biodiversity: false
+          biodiversity: false,
+          userReports: true
      })
 
      // Data state
@@ -90,6 +156,7 @@ const Page = () => {
      const [floodData, setFloodData] = useState<FloodData[]>([])
      const [fireData, setFireData] = useState<FireData[]>([])
      const [biodiversityData, setBiodiversityData] = useState<BiodiversityData[]>([])
+     const [userReports] = useState<UserReport[]>(dummyUserReports)
      const [isLoading, setIsLoading] = useState(true)
 
      // Island coordinates for centering map
@@ -219,6 +286,7 @@ const Page = () => {
                          floodData={floodData}
                          fireData={fireData}
                          biodiversityData={biodiversityData}
+                         userReports={userReports}
                     />
                </div>
           </div>
