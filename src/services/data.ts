@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { logger } from '@/lib/logger'
 
 // ==================== INTERFACES ====================
 interface GFWAlert {
@@ -14,6 +15,8 @@ interface TreeCoverLossItem {
      area_ha: number
 }
 
+// GFW API URL (used by API proxy routes in /api/gfw-proxy/)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const GFW_API_URL = 'https://data-api.globalforestwatch.org'
 const GFW_TILES_URL = 'https://tiles.globalforestwatch.org'
 
@@ -49,19 +52,15 @@ export async function fetchDeforestationStats() {
 
 export async function fetchGLADAlerts(days = 30) {
      try {
-          const endDate = new Date()
-          const startDate = new Date()
-          startDate.setDate(startDate.getDate() - days)
-
-          const response = await axios.get(`${GFW_API_URL}/dataset/gfw_integrated_alerts/latest/query`, {
-               params: {
-                    sql: `SELECT latitude, longitude, confidence, alert__date as alert_date FROM gfw_integrated_alerts WHERE iso = 'IDN' AND alert__date >= '${startDate.toISOString().split('T')[0]}' AND alert__date <= '${endDate.toISOString().split('T')[0]}' ORDER BY alert__date DESC LIMIT 50`
-               },
-               timeout: 10000
+          // Use Next.js API route as proxy to avoid CORS issues
+          const response = await axios.get(`/api/gfw-proxy/integrated-alerts`, {
+               params: { days },
+               timeout: 15000
           })
 
-          if (response.data && response.data.data && response.data.data.length > 0) {
-               return response.data.data.map((alert: GFWAlert, index: number) => ({
+          // Check if request was successful and has data
+          if (response.data?.success && response.data?.data?.data && response.data.data.data.length > 0) {
+               const alerts = response.data.data.data.map((alert: GFWAlert, index: number) => ({
                     id: `gfw_int_${index}`,
                     lat: alert.latitude,
                     lng: alert.longitude,
@@ -69,13 +68,22 @@ export async function fetchGLADAlerts(days = 30) {
                     confidence: alert.confidence >= 3 ? 'high' : 'medium',
                     location: getLocationFromCoords(alert.latitude, alert.longitude)
                }))
+
+               logger.info('Loaded GLAD alerts from GFW API', {
+                    count: alerts.length,
+                    days
+               })
+
+               return alerts
           }
 
           // Fallback to mock if no data or API requires authentication
+          logger.apiFallback('GLAD Alerts', `No data returned from API for last ${days} days`)
           return getFallbackGLADAlerts()
 
      } catch (error) {
-          console.warn('GFW Integrated Alerts API unavailable (may require API key), using fallback data:', (error as Error).message)
+          const err = error instanceof Error ? error : new Error('Unknown error')
+          logger.apiFallback('GLAD Alerts', err.message)
           return getFallbackGLADAlerts()
      }
 }
@@ -176,16 +184,15 @@ function generateMockMonthlyRainfall() {
 
 export async function fetchTreeCoverLoss(year = 2023) {
      try {
-          // Fetch tree cover loss data from GFW for Indonesia
-          const response = await axios.get(`${GFW_API_URL}/dataset/umd_tree_cover_loss/latest/query`, {
-               params: {
-                    sql: `SELECT umd_tree_cover_loss__year as year, SUM(umd_tree_cover_loss__ha) as area_ha, latitude, longitude FROM umd_tree_cover_loss WHERE iso = 'IDN' AND umd_tree_cover_loss__year = ${year} GROUP BY year, latitude, longitude ORDER BY area_ha DESC LIMIT 100`
-               },
-               timeout: 10000
+          // Use Next.js API route as proxy to avoid CORS issues
+          const response = await axios.get(`/api/gfw-proxy/tree-cover-loss`, {
+               params: { year },
+               timeout: 15000
           })
 
-          if (response.data && response.data.data && response.data.data.length > 0) {
-               const hotspots = response.data.data.map((item: TreeCoverLossItem) => {
+          // Check if request was successful and has data
+          if (response.data?.success && response.data?.data?.data && response.data.data.data.length > 0) {
+               const hotspots = response.data.data.data.map((item: TreeCoverLossItem) => {
                     const location = getLocationFromCoords(item.latitude, item.longitude)
                     const island = getIslandFromCoords(item.latitude, item.longitude)
 
@@ -199,17 +206,24 @@ export async function fetchTreeCoverLoss(year = 2023) {
                     }
                })
 
+               logger.info('Loaded tree cover loss data from GFW API', {
+                    year,
+                    count: hotspots.length
+               })
+
                return {
                     year,
                     data: hotspots
                }
           }
 
-          // Fallback to mock data
+          // Fallback to mock data if API failed or returned no data
+          logger.apiFallback('Tree Cover Loss', `No data returned from API for year ${year}`)
           return getFallbackTreeCoverLoss(year)
 
      } catch (error) {
-          console.warn('GFW API unavailable for tree cover loss, using fallback:', (error as Error).message)
+          const err = error instanceof Error ? error : new Error('Unknown error')
+          logger.apiFallback('Tree Cover Loss', err.message)
           return getFallbackTreeCoverLoss(year)
      }
 }

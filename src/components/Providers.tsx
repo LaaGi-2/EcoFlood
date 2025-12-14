@@ -1,14 +1,22 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode, useState, useEffect } from 'react';
+import { store } from '@/store';
+import { Provider } from 'react-redux';
 
 function makeQueryClient() {
      return new QueryClient({
           defaultOptions: {
                queries: {
-                    staleTime: 60 * 1000,
+                    staleTime: 5 * 60 * 1000, // 5 minutes
+                    gcTime: 10 * 60 * 1000, // 10 minutes
                     refetchOnWindowFocus: false,
+                    retry: 1,
+               },
+               mutations: {
+                    retry: 1,
                },
           },
      })
@@ -39,8 +47,11 @@ export default function Providers({ children }: { children: ReactNode }) {
      }
 
      return (
-          <QueryClientProvider client={queryClient}>
-               {children}
-          </QueryClientProvider>
+          <Provider store={store}>
+               <QueryClientProvider client={queryClient}>
+                    {children}
+                    {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+               </QueryClientProvider>
+          </Provider>
      )
 }

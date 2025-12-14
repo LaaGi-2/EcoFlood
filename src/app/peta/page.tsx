@@ -1,78 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import MapSidebar from '@/components/peta/MapSidebar'
 import MapLayers from '@/components/peta/MapLayers'
 import ReportButton from '@/components/peta/ReportButton'
 import ReportModal from '@/components/peta/ReportModal'
-import {
-     fetchTreeCoverLoss,
-     fetchFloodHistory,
-     fetchFireHotspots,
-     fetchBiodiversityData
-} from '@/services/data'
-
-interface DeforestationData {
-     lat: number
-     lng: number
-     region: string
-     island: string
-     intensity: number
-     area_hectares: number
-}
-
-interface FloodData {
-     id: string
-     year: number
-     island: string
-     lat: number
-     lng: number
-     location: string
-     severity: 'low' | 'medium' | 'high' | 'critical'
-     casualties: number
-     affected: number
-     description: string
-}
-
-interface FireData {
-     id: string
-     year: number
-     island: string
-     lat: number
-     lng: number
-     location: string
-     confidence: string
-     brightness: number
-     frp: number
-     type: string
-}
-
-interface BiodiversityData {
-     id: string
-     island: string
-     lat: number
-     lng: number
-     location: string
-     type: string
-     species: string[]
-     area_km2: number
-}
-
-interface UserReport {
-     id: string
-     lat: number
-     lng: number
-     location?: string
-     island: string
-     type?: 'flood' | 'deforestation' | 'fire' | 'other'
-     description: string
-     date: string
-     status: 'pending' | 'success' | 'rejected'
-     imageUrl?: string
-}
+import { LoadingOverlay, showNotification } from '@/components/common'
+import { useMapData, useIslandFilter } from '@/hooks/map'
 
 // Fix Leaflet default marker icon issue
 if (typeof window !== 'undefined') {
@@ -101,13 +38,15 @@ const Page = () => {
           userReports: true
      })
 
-     // Data state
-     const [deforestationData, setDeforestationData] = useState<DeforestationData[]>([])
-     const [floodData, setFloodData] = useState<FloodData[]>([])
-     const [fireData, setFireData] = useState<FireData[]>([])
-     const [biodiversityData, setBiodiversityData] = useState<BiodiversityData[]>([])
-     const [userReports, setUserReports] = useState<UserReport[]>([])
-     const [isLoading, setIsLoading] = useState(true)
+     // Use custom hooks for data management
+     const {
+          deforestationData,
+          floodData,
+          fireData,
+          biodiversityData,
+          userReports,
+          isLoading
+     } = useMapData(selectedIsland, selectedYear)
 
      // Modal state
      const [isModalOpen, setIsModalOpen] = useState(false)
@@ -122,6 +61,10 @@ const Page = () => {
           sulawesi: { center: [-1.5, 121.0] as [number, number], zoom: 6 },
           papua: { center: [-4.0, 137.0] as [number, number], zoom: 6 }
      }
+
+     // Filter data based on island selection
+     const filteredDeforestationData = useIslandFilter(deforestationData, selectedIsland)
+     const filteredUserReports = useIslandFilter(userReports, selectedIsland)
 
      useEffect(() => {
           setIsMounted(true)
@@ -147,50 +90,6 @@ const Page = () => {
                }
           }
      }, [isMounted])
-
-     // Load data when island or year changes
-     useEffect(() => {
-          if (!isMounted) return
-
-          const loadData = async () => {
-               setIsLoading(true)
-               try {
-                    const [deforest, flood, fire, bio, reports] = await Promise.all([
-                         fetchTreeCoverLoss(selectedYear),
-                         fetchFloodHistory(selectedIsland, selectedYear),
-                         fetchFireHotspots(selectedIsland, selectedYear),
-                         fetchBiodiversityData(selectedIsland),
-                         fetch('/api/report-disaster').then(res => res.json())
-                    ])
-
-                    setDeforestationData(deforest.data || [])
-                    setFloodData((flood || []) as FloodData[])
-                    setFireData((fire || []) as FireData[])
-                    setBiodiversityData((bio || []) as BiodiversityData[])
-
-                    // Only show approved reports
-                    const approvedReports = (reports || [])
-                         .filter((r: { status: string }) => r.status === 'success')
-                         .map((r: { id: number; latitude: number; longitude: number; description: string; createdAt: number; imageUrl: string }) => ({
-                              id: r.id,
-                              lat: r.latitude,
-                              lng: r.longitude,
-                              description: r.description,
-                              date: new Date(r.createdAt).toISOString().split('T')[0],
-                              status: 'success' as const,
-                              island: getIslandFromCoords(r.latitude, r.longitude),
-                              imageUrl: r.imageUrl
-                         }))
-                    setUserReports(approvedReports)
-               } catch (error) {
-                    console.error('Error loading data:', error)
-               } finally {
-                    setIsLoading(false)
-               }
-          }
-
-          loadData()
-     }, [selectedIsland, selectedYear, isMounted])
 
      // Update map view when island changes
      useEffect(() => {
@@ -224,18 +123,10 @@ const Page = () => {
 
      // Handle report success
      const handleReportSuccess = () => {
-          // Show success notification
-          if (typeof window !== 'undefined') {
-               const notification = document.createElement('div')
-               notification.className = 'fixed top-20 right-8 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slideIn'
-               notification.style.zIndex = '2001'
-               notification.innerHTML = '✓ Laporan berhasil dikirim! Menunggu persetujuan admin.'
-               document.body.appendChild(notification)
-
-               setTimeout(() => {
-                    notification.remove()
-               }, 4000)
-          }
+          showNotification({
+               message: 'Laporan berhasil dikirim! Menunggu persetujuan admin.',
+               type: 'success'
+          })
      }
 
      // Update map center when map moves
@@ -255,17 +146,6 @@ const Page = () => {
                }
           }
      }, [isMounted])
-
-     // Filter data based on selected island
-     const filteredDeforestationData = useMemo(() => {
-          if (selectedIsland === 'all') return deforestationData
-          return deforestationData.filter(item => item.island === selectedIsland)
-     }, [deforestationData, selectedIsland])
-
-     const filteredUserReports = useMemo(() => {
-          if (selectedIsland === 'all') return userReports
-          return userReports.filter(report => report.island === selectedIsland)
-     }, [userReports, selectedIsland])
 
      if (!isMounted) {
           return (
@@ -294,13 +174,7 @@ const Page = () => {
                     <div ref={mapContainerRef} className='w-full h-full' />
 
                     {/* Loading overlay */}
-                    {isLoading && (
-                         <div className='absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center' style={{ zIndex: 1000 }}>
-                              <div className='bg-surface-primary text-background px-6 py-3 rounded-full shadow-lg'>
-                                   <span className='font-semibold'>Memuat data...</span>
-                              </div>
-                         </div>
-                    )}
+                    <LoadingOverlay isLoading={isLoading} message="Memuat data peta..." />
 
                     {/* Map Layers */}
                     <MapLayers
