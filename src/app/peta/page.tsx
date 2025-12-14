@@ -6,6 +6,8 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import MapSidebar from '@/components/peta/MapSidebar'
 import MapLayers from '@/components/peta/MapLayers'
+import ReportButton from '@/components/peta/ReportButton'
+import ReportModal, { ReportFormData } from '@/components/peta/ReportModal'
 import {
      fetchTreeCoverLoss,
      fetchFloodHistory,
@@ -156,8 +158,12 @@ const Page = () => {
      const [floodData, setFloodData] = useState<FloodData[]>([])
      const [fireData, setFireData] = useState<FireData[]>([])
      const [biodiversityData, setBiodiversityData] = useState<BiodiversityData[]>([])
-     const [userReports] = useState<UserReport[]>(dummyUserReports)
+     const [userReports, setUserReports] = useState<UserReport[]>(dummyUserReports)
      const [isLoading, setIsLoading] = useState(true)
+
+     // Modal state
+     const [isModalOpen, setIsModalOpen] = useState(false)
+     const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
 
      // Island coordinates for centering map
      const islandCoordinates = {
@@ -241,6 +247,56 @@ const Page = () => {
           }))
      }
 
+     // Handle report submission
+     const handleReportSubmit = (reportData: ReportFormData) => {
+          const newReport: UserReport = {
+               id: `ur${Date.now()}`,
+               lat: mapCenter?.lat || reportData.lat,
+               lng: mapCenter?.lng || reportData.lng,
+               location: reportData.location,
+               type: reportData.type,
+               description: reportData.description,
+               date: new Date().toISOString().split('T')[0],
+               status: 'pending'
+          }
+
+          setUserReports([...userReports, newReport])
+
+          // Show success notification
+          if (typeof window !== 'undefined') {
+               const notification = document.createElement('div')
+               notification.className = 'fixed top-20 right-8 bg-primary text-surface-primary px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slideIn'
+               notification.style.zIndex = '2001'
+               notification.innerHTML = '✓ Laporan berhasil dikirim!'
+               document.body.appendChild(notification)
+
+               setTimeout(() => {
+                    notification.remove()
+               }, 3000)
+          }
+
+          // TODO: Send to API
+          // await submitReport(reportData)
+     }
+
+     // Update map center when map moves
+     useEffect(() => {
+          if (mapRef.current) {
+               const map = mapRef.current
+               const updateCenter = () => {
+                    const center = map.getCenter()
+                    setMapCenter({ lat: center.lat, lng: center.lng })
+               }
+
+               map.on('move', updateCenter)
+               updateCenter() // Set initial center
+
+               return () => {
+                    map.off('move', updateCenter)
+               }
+          }
+     }, [isMounted])
+
      if (!isMounted) {
           return (
                <div className='h-screen w-full flex items-center justify-center bg-background text-surface-primary'>
@@ -287,6 +343,20 @@ const Page = () => {
                          fireData={fireData}
                          biodiversityData={biodiversityData}
                          userReports={userReports}
+                    />
+
+                    {/* Floating Report Button */}
+                    <ReportButton
+                         onClick={() => setIsModalOpen(true)}
+                         reportCount={userReports.filter(r => r.status === 'pending').length}
+                    />
+
+                    {/* Report Modal */}
+                    <ReportModal
+                         isOpen={isModalOpen}
+                         onClose={() => setIsModalOpen(false)}
+                         onSubmit={handleReportSubmit}
+                         currentPosition={mapCenter}
                     />
                </div>
           </div>

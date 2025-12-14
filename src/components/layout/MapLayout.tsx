@@ -8,6 +8,7 @@ const MapLayout = () => {
      return (
           <MapContainer
                center={[51.505, -0.09]}
+               attributionControl={false}
                zoom={13}
                scrollWheelZoom={false}
                style={{ height: '100%', width: '100%' }}>

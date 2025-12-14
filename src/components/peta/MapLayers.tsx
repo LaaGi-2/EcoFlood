@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
+import { Flame, Leaf, MapPin, Ruler } from 'lucide-react'
+import { renderToString } from 'react-dom/server'
 
 interface DeforestationData {
      lat: number
@@ -215,33 +217,55 @@ const MapLayers: React.FC<MapLayersProps> = ({
           if (layers.fireHotspots && fireData.length > 0 && layerGroupsRef.current.fireHotspots) {
                fireData.forEach(fire => {
                     // Color based on confidence level
-                    const confidenceColors: Record<string, { color: string, shadow: string }> = {
-                         high: { color: '#dc2626', shadow: 'rgba(220, 38, 38, 0.8)' },
-                         medium: { color: '#f97316', shadow: 'rgba(249, 115, 22, 0.8)' },
-                         low: { color: '#fbbf24', shadow: 'rgba(251, 191, 36, 0.8)' }
+                    const confidenceColors: Record<string, { color: string, fill: string, label: string }> = {
+                         high: { color: '#991b1b', fill: '#dc2626', label: 'Confidence Tinggi' },
+                         medium: { color: '#c2410c', fill: '#f97316', label: 'Confidence Sedang' },
+                         low: { color: '#ca8a04', fill: '#fbbf24', label: 'Confidence Rendah' }
                     }
 
                     const config = confidenceColors[fire.confidence] || confidenceColors.medium
 
                     const marker = L.circleMarker([fire.lat, fire.lng], {
                          radius: 8,
-                         fillColor: config.color,
-                         color: '#fff',
+                         fillColor: config.fill,
+                         color: config.color,
                          weight: 2,
                          opacity: 1,
                          fillOpacity: 0.8
                     })
 
+                    const flameIcon = renderToString(<Flame size={24} />)
+                    const mapPinIcon = renderToString(<MapPin size={16} />)
+
                     marker.bindPopup(`
-                         <div class="p-3 min-w-62.5">
-                              <h3 class="font-bold text-lg text-orange-600 mb-2">🔥 Titik Api</h3>
-                              <div class="mb-2 px-2 py-1 rounded text-xs font-semibold inline-block" style="background: ${config.color}; color: white;">
-                                   ${fire.confidence.toUpperCase()}
+                         <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${config.color};">
+                              <div class="flex items-center gap-2 mb-3">
+                                   <div style="color: ${config.fill};">${flameIcon}</div>
+                                   <h3 class="font-bold text-lg" style="color: #2a6354;">Titik Api</h3>
                               </div>
-                              <p class="text-sm"><strong>Lokasi:</strong> ${fire.location}</p>
-                              <p class="text-sm"><strong>Brightness:</strong> ${fire.brightness}K</p>
-                              <p class="text-sm"><strong>FRP:</strong> ${fire.frp} MW</p>
-                              <p class="text-sm"><strong>Tipe:</strong> <span class="capitalize">${fire.type}</span></p>
+                              <div class="mb-3">
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-block" style="background: ${config.fill}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${config.label}
+                                   </div>
+                              </div>
+                              <div class="space-y-2" style="color: #2a6354;">
+                                   <div class="flex items-start gap-2">
+                                        <div style="min-width: 16px;">${mapPinIcon}</div>
+                                        <p class="text-sm"><strong>Lokasi:</strong> ${fire.location}</p>
+                                   </div>
+                                   <div class="flex items-start gap-2">
+                                        <span class="font-bold text-sm">🌡️</span>
+                                        <p class="text-sm"><strong>Brightness:</strong> ${fire.brightness}K</p>
+                                   </div>
+                                   <div class="flex items-start gap-2">
+                                        <span class="font-bold text-sm">⚡</span>
+                                        <p class="text-sm"><strong>FRP:</strong> ${fire.frp} MW</p>
+                                   </div>
+                                   <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(249,115,22,0.1) 0%, rgba(249,115,22,0.2) 100%); border-left: 3px solid ${config.color};">
+                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">Tipe Kebakaran:</p>
+                                        <p class="text-sm capitalize" style="color: #2a6354;">${fire.type}</p>
+                                   </div>
+                              </div>
                          </div>
                     `)
 
@@ -253,14 +277,14 @@ const MapLayers: React.FC<MapLayersProps> = ({
           // Biodiversity Layer
           if (layers.biodiversity && biodiversityData.length > 0 && layerGroupsRef.current.biodiversity) {
                biodiversityData.forEach(area => {
-                    // Color based on protection type
-                    const typeColors: Record<string, { color: string, fill: string }> = {
-                         UNESCO: { color: '#059669', fill: '#10b981' },
-                         Critical: { color: '#dc2626', fill: '#ef4444' },
-                         Protected: { color: '#0891b2', fill: '#06b6d4' }
+                    // Color based on protection type - all use green shades for clarity
+                    const typeColors: Record<string, { color: string, fill: string, label: string }> = {
+                         UNESCO: { color: '#047857', fill: '#10b981', label: 'UNESCO World Heritage' },
+                         Critical: { color: '#ca8a04', fill: '#fbbf24', label: 'Kawasan Kritis' },
+                         Protected: { color: '#059669', fill: '#34d399', label: 'Kawasan Lindung' }
                     }
 
-                    const config = typeColors[area.type] || { color: '#10b981', fill: '#34d399' }
+                    const config = typeColors[area.type] || { color: '#10b981', fill: '#34d399', label: 'Kawasan Lindung' }
 
                     const marker = L.circleMarker([area.lat, area.lng], {
                          radius: 8,
@@ -271,16 +295,35 @@ const MapLayers: React.FC<MapLayersProps> = ({
                          fillOpacity: 0.7
                     })
 
+                    const leafIcon = renderToString(<Leaf size={24} />)
+                    const mapPinIcon = renderToString(<MapPin size={16} />)
+                    const rulerIcon = renderToString(<Ruler size={16} />)
+
                     marker.bindPopup(`
-                         <div class="p-3 min-w-70">
-                              <h3 class="font-bold text-lg text-green-600 mb-2">🦜 Kawasan Lindung</h3>
-                              <div class="mb-2 px-2 py-1 rounded text-xs font-semibold inline-block" style="background: ${config.color}; color: white;">
-                                   ${area.type}
+                         <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${config.color};">
+                              <div class="flex items-center gap-2 mb-3">
+                                   <div style="color: ${config.fill};">${leafIcon}</div>
+                                   <h3 class="font-bold text-lg" style="color: #2a6354;">Keanekaragaman Hayati</h3>
                               </div>
-                              <p class="text-sm"><strong>Nama:</strong> ${area.location}</p>
-                              <p class="text-sm"><strong>Luas:</strong> ${area.area_km2.toLocaleString()} km²</p>
-                              <p class="text-sm"><strong>Spesies Dilindungi:</strong></p>
-                              <p class="text-xs text-gray-600 mt-1">${area.species.join(', ')}</p>
+                              <div class="mb-3">
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold inline-block" style="background: ${config.fill}; color: ${area.type === 'Critical' ? '#2a6354' : 'white'}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${config.label}
+                                   </div>
+                              </div>
+                              <div class="space-y-2" style="color: #2a6354;">
+                                   <div class="flex items-start gap-2">
+                                        <div style="min-width: 16px;">${mapPinIcon}</div>
+                                        <p class="text-sm"><strong>Lokasi:</strong> ${area.location}</p>
+                                   </div>
+                                   <div class="flex items-start gap-2">
+                                        <div style="min-width: 16px;">${rulerIcon}</div>
+                                        <p class="text-sm"><strong>Luas:</strong> ${area.area_km2.toLocaleString()} km²</p>
+                                   </div>
+                                   <div class="mt-3 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.2) 100%); border-left: 3px solid ${config.color};">
+                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">🐾 Spesies Dilindungi:</p>
+                                        <p class="text-sm" style="color: #2a6354;">${area.species.join(', ')}</p>
+                                   </div>
+                              </div>
                          </div>
                     `)
 
@@ -302,13 +345,6 @@ const MapLayers: React.FC<MapLayersProps> = ({
 
                     const config = reportConfig[report.type] || reportConfig.other
 
-                    // Status badge color
-                    const statusColors: Record<string, string> = {
-                         pending: '#fbbf24',
-                         verified: '#10b981',
-                         rejected: '#ef4444'
-                    }
-
                     const marker = L.circleMarker([report.lat, report.lng], {
                          radius: 8,
                          fillColor: config.color,
@@ -319,19 +355,33 @@ const MapLayers: React.FC<MapLayersProps> = ({
                     })
 
                     marker.bindPopup(`
-                         <div class="p-3 min-w-70">
-                              <h3 class="font-bold text-lg mb-2" style="color: ${config.color};">${config.icon} Laporan Warga</h3>
-                              <div class="flex gap-2 mb-2">
-                                   <div class="px-2 py-1 rounded text-xs font-semibold" style="background: ${config.color}; color: white;">
+                         <div class="p-4 min-w-70 rounded-lg" style="background: #fcf6e4; border: 2px solid ${config.color};">
+                              <div class="flex items-center gap-2 mb-3">
+                                   <span style="font-size: 1.5rem;">${config.icon}</span>
+                                   <h3 class="font-bold text-lg" style="color: #2a6354;">Laporan Warga</h3>
+                              </div>
+                              <div class="flex gap-2 mb-3 flex-wrap">
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold" style="background: ${config.color}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                         ${config.label}
                                    </div>
-                                   <div class="px-2 py-1 rounded text-xs font-semibold capitalize" style="background: ${statusColors[report.status]}; color: white;">
-                                        ${report.status === 'pending' ? 'Menunggu' : report.status === 'verified' ? 'Terverifikasi' : 'Ditolak'}
+                                   <div class="px-3 py-1.5 rounded-full text-xs font-bold capitalize" style="background: ${report.status === 'pending' ? '#ff8b71' : report.status === 'verified' ? '#b4e251' : '#ef4444'}; color: ${report.status === 'verified' ? '#2a6354' : 'white'}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${report.status === 'pending' ? '⏳ Menunggu' : report.status === 'verified' ? '✓ Terverifikasi' : '✗ Ditolak'}
                                    </div>
                               </div>
-                              <p class="text-sm"><strong>Lokasi:</strong> ${report.location}</p>
-                              <p class="text-sm"><strong>Tanggal:</strong> ${new Date(report.date).toLocaleDateString('id-ID')}</p>
-                              <p class="text-sm mt-2 text-gray-600">${report.description}</p>
+                              <div class="space-y-2" style="color: #2a6354;">
+                                   <div class="flex items-start gap-2">
+                                        <span class="font-bold text-sm">📍</span>
+                                        <p class="text-sm"><strong>Lokasi:</strong> ${report.location}</p>
+                                   </div>
+                                   <div class="flex items-start gap-2">
+                                        <span class="font-bold text-sm">📅</span>
+                                        <p class="text-sm"><strong>Tanggal:</strong> ${new Date(report.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                   </div>
+                                   <div class="mt-3 p-3 rounded-lg" style="background: #2a6354; background: linear-gradient(135deg, rgba(42,99,84,0.05) 0%, rgba(42,99,84,0.1) 100%); border-left: 3px solid #2a6354;">
+                                        <p class="text-sm font-semibold mb-1" style="color: #2a6354;">Deskripsi:</p>
+                                        <p class="text-sm" style="color: #2a6354;">${report.description}</p>
+                                   </div>
+                              </div>
                          </div>
                     `)
 

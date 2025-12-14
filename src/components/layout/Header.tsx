@@ -3,13 +3,10 @@
 import Image from "next/image";
 import Navigate, { NavigateType } from "../ui/Navigate";
 import React from 'react'
+import { usePathname } from 'next/navigation'
 
 const Header = () => {
-     const [, setIsActive] = React.useState<string>();
-
-     const handleIsActive = () => {
-          setIsActive(window.location.pathname);
-     }
+     const pathname = usePathname()
 
      const navigate: NavigateType[] = [
           {
@@ -44,8 +41,7 @@ const Header = () => {
                                         key={index}
                                         href={item.href}
                                         name={item.name}
-                                        handleIsActive={handleIsActive}
-                                        isActive={item.href === window.location.pathname}
+                                        isActive={pathname === item.href}
                                    />
                               ))}
                          </nav>

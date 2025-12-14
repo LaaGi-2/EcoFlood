@@ -11,8 +11,6 @@ interface MapComponentProps {
      isActive?: boolean
 }
 
-
-
 const MapComponent: React.FC<MapComponentProps> = ({ location }) => {
 
 

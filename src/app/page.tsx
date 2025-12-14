@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-const page = () => {
+const Page = () => {
   const router = useRouter()
 
   return (
@@ -39,7 +39,7 @@ const page = () => {
         </div>
         {/* right content */}
         <div className='absolute right-18 -top-35 flex justify-center items-center -z-10'>
-          <div className='relative w-[700px] h-[760px]'>
+          <div className='relative w-175 h-190'>
             <Image src="/hero-image.png" alt="EcoFlood Logo" width={600} height={500} className='object-center w-full h-full' />
             <div className='absolute bottom-8 right-8 z-10'>
               <div className='bg-background rounded-4xl w-60 h-40 flex flex-col justify-center px-5 gap-2 z-10'>
@@ -60,4 +60,4 @@ const page = () => {
   )
 }
 
-export default page 
+export default Page 

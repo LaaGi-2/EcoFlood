@@ -9,11 +9,11 @@ export type NavigateType = {
 }
 
 const Navigate: React.FC<NavigateType> = ({
-     href, name, isActive, handleIsActive
+     href, name, isActive
 }) => {
 
      return (
-          <Link href={href} onClick={handleIsActive} className={`font-medium text-base 
+          <Link href={href} className={`font-medium text-base 
           rounded-full px-6 py-2
           hover:translate-y-0.5 transition duration-300
           ${isActive ? 'bg-primary' : 'bg-background hover:bg-primary '}`}>

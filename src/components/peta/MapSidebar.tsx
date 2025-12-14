@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Trees, Droplets, Flame, Leaf, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface MapSidebarProps {
@@ -102,35 +102,35 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
                               label="Deforestasi"
                               checked={layers.deforestation}
                               onChange={() => onLayerToggle('deforestation')}
-                              icon="🌳"
+                              icon={<Trees size={18} />}
                               description="Hilangnya tutupan hutan"
                          />
                          <LayerCheckbox
                               label="Riwayat Banjir"
                               checked={layers.floodHistory}
                               onChange={() => onLayerToggle('floodHistory')}
-                              icon="💧"
+                              icon={<Droplets size={18} />}
                               description="Kejadian banjir historis"
                          />
                          <LayerCheckbox
                               label="Titik Api"
                               checked={layers.fireHotspots}
                               onChange={() => onLayerToggle('fireHotspots')}
-                              icon="🔥"
+                              icon={<Flame size={18} />}
                               description="Hotspot kebakaran hutan"
                          />
                          <LayerCheckbox
                               label="Keanekaragaman Hayati"
                               checked={layers.biodiversity}
                               onChange={() => onLayerToggle('biodiversity')}
-                              icon="🦜"
+                              icon={<Leaf size={18} />}
                               description="Area konservasi"
                          />
                          <LayerCheckbox
                               label="Laporan Warga"
                               checked={layers.userReports}
                               onChange={() => onLayerToggle('userReports')}
-                              icon="📍"
+                              icon={<Users size={18} />}
                               description="Laporan dari masyarakat"
                          />
                     </div>
@@ -139,10 +139,12 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
                {/* Legend */}
                <div className="mt-6 pt-6 border-t border-background/20">
                     <h3 className="text-background font-semibold mb-3 text-sm">Legenda Tingkat Bahaya</h3>
-                    <div className="space-y-3 text-xs text-background/90">
+                    <div className="space-y-4 text-xs text-background/90">
                          {/* Deforestation Legend */}
                          <div>
-                              <p className="font-semibold mb-1.5 text-background">🌳 Deforestasi</p>
+                              <p className="font-semibold mb-1.5 text-background flex items-center gap-1.5">
+                                   <Trees size={14} /> Deforestasi
+                              </p>
                               <div className="space-y-1 ml-4">
                                    <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full" style={{ background: '#dc2626' }}></div>
@@ -165,7 +167,9 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
 
                          {/* Flood Legend */}
                          <div>
-                              <p className="font-semibold mb-1.5 text-background">💧 Banjir</p>
+                              <p className="font-semibold mb-2 text-background flex items-center gap-1.5">
+                                   <Droplets size={14} /> Banjir
+                              </p>
                               <div className="space-y-1 ml-4">
                                    <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full" style={{ background: '#1e3a8a' }}></div>
@@ -186,19 +190,46 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
                               </div>
                          </div>
 
-                         {/* Other Layers */}
-                         <div className="space-y-1.5 pt-2 border-t border-background/10">
-                              <div className="flex items-center gap-2">
-                                   <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                   <span>🔥 Titik Api</span>
+                         {/* Fire Hotspots Legend */}
+                         <div>
+                              <p className="font-semibold mb-2 text-background flex items-center gap-1.5">
+                                   <Flame size={14} /> Titik Api
+                              </p>
+                              <div className="space-y-1 ml-4">
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#dc2626' }}></div>
+                                        <span>Confidence Tinggi</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#f97316' }}></div>
+                                        <span>Confidence Sedang</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#fbbf24' }}></div>
+                                        <span>Confidence Rendah</span>
+                                   </div>
                               </div>
-                              <div className="flex items-center gap-2">
-                                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                   <span>🦜 Kawasan Lindung</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                   <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                   <span>📍 Laporan Warga</span>
+                         </div>
+
+                         {/* kawasan lindung */}
+                         <div className="">
+                              <p className="font-semibold mb-2 text-background flex items-center gap-1.5">
+                                   <Leaf size={14} />
+                                   <span>Kawasan Lindung</span>
+                              </p>
+                              <div className='space-y-1 ml-4'>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#10b981' }}></div>
+                                        <span className="">UNESCO</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#34d399' }}></div>
+                                        <span className="">Protected</span>
+                                   </div>
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full" style={{ background: '#fbbf24' }}></div>
+                                        <span className="">Critical</span>
+                                   </div>
                               </div>
                          </div>
                     </div>
@@ -233,7 +264,7 @@ interface LayerCheckboxProps {
      label: string
      checked: boolean
      onChange: () => void
-     icon: string
+     icon: React.ReactNode
      description: string
 }
 
@@ -256,7 +287,7 @@ const LayerCheckbox: React.FC<LayerCheckboxProps> = ({ label, checked, onChange,
                     />
                     <div className="flex-1">
                          <div className="flex items-center gap-2">
-                              <span className="text-lg">{icon}</span>
+                              <div className={checked ? 'text-surface-primary' : 'text-background'}>{icon}</div>
                               <span className="font-semibold text-sm">{label}</span>
                          </div>
                          <p className={`text-xs mt-0.5 ${checked ? 'text-surface-primary/80' : 'text-background/60'}`}>
